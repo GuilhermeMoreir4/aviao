@@ -1,0 +1,50 @@
+### 1. Criar portão válido
+POST http://localhost:8080/api/portoes
+Content-Type: application/json
+
+{
+  "codigo": "A1",
+  "disponivel": true
+}
+
+### 2. Criar portão com código duplicado (A1)
+POST http://localhost:8080/api/portoes
+Content-Type: application/json
+
+{
+  "codigo": "A1",
+  "disponivel": true
+}
+
+### 3. Criar portão com campo inválido (código vazio)
+POST http://localhost:8080/api/portoes
+Content-Type: application/json
+
+{
+  "codigo": "",
+  "disponivel": true
+}
+
+### 4. Buscar portão por ID
+GET http://localhost:8080/api/portoes/6821f91ab0915563d3d3add3
+
+### 5. Buscar portão por código
+GET http://localhost:8080/api/portoes/codigo/A1
+
+### 6. Buscar portão disponível
+GET http://localhost:8080/api/portoes/disponivel
+
+### 7. Atualizar portão (disponibilidade)
+PUT http://localhost:8080/api/portoes/6821f7658b4b364a80c0fe30
+Content-Type: application/json
+
+{
+  "codigo": "A1",
+  "disponivel": false
+}
+
+### 8. Deletar portão
+DELETE http://localhost:8080/api/portoes/{{id_valido}}
+
+### 9. Listar todos os portões
+GET http://localhost:8080/api/portoes

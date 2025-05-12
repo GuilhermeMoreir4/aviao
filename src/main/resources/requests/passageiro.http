@@ -1,0 +1,70 @@
+### 1. Criar passageiro válido
+POST http://localhost:8080/api/passageiros
+Content-Type: application/json
+
+{
+  "nome": "João da Silva",
+  "cpf": "12345678909",
+  "vooId": "6821ff64f3008c26c9543859",
+  "status": "embarque"
+}
+
+### 2. Criar passageiro com CPF inválido
+POST http://localhost:8080/api/passageiros
+Content-Type: application/json
+
+{
+  "nome": "Maria Oliveira",
+  "cpf": "12345678900a",
+  "vooId": "6821ff64f3008c26c9543859",
+  "status": "EMBARQUE"
+}
+
+### 3. Criar passageiro com CPF duplicado
+POST http://localhost:8080/api/passageiros
+Content-Type: application/json
+
+{
+  "nome": "Carlos Mendes",
+  "cpf": "12345678909",
+  "vooId": "voo124",
+  "status": "embarque"
+}
+
+### 4. Criar passageiro com campos faltando (ex: nome vazio)
+POST http://localhost:8080/api/passageiros
+Content-Type: application/json
+
+{
+  "nome": "",
+  "cpf": "98765432100",
+  "vooId": "voo125",
+  "status": "EMBARQUE"
+}
+
+### 7. Buscar passageiro por ID
+GET http://localhost:8080/api/passageiros/68220069f3008c26c954385d
+
+### 8. Atualizar passageiro
+PUT http://localhost:8080/api/passageiros/68220069f3008c26c954385d
+Content-Type: application/json
+
+{
+  "nome": "João Atualizado",
+  "cpf": "12345678909",
+  "vooId": "voo123",
+  "statusCheckin": "realizado"
+}
+
+### 9. Deletar passageiro
+DELETE http://localhost:8080/api/passageiros/{{id_valido}}
+
+### 10. Listar todos os passageiros
+GET http://localhost:8080/api/passageiros
+
+### 11. Listar passageiros por voo
+GET http://localhost:8080/api/passageiros/voo/6821ff64f3008c26c9543859
+
+
+### 12. Fazer checkin
+POST http://localhost:8080/api/passageiros/6821ff64f3008c26c9543859/checkin

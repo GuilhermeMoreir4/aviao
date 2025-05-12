@@ -1,0 +1,67 @@
+### Criar um novo Voo
+POST http://localhost:8080/api/voos
+Content-Type: application/json
+
+{
+  "portaoId": "6821f91ab0915563d3d3add3",
+  "numeroVoo": "FL123",
+  "origem": "São Paulo",
+  "destino": "Rio de Janeiro",
+  "dataHoraPartida": "2025-06-01T15:30:00",
+  "status": "programado"
+}
+
+### Segundo voo
+POST http://localhost:8080/api/voos
+Content-Type: application/json
+
+{
+  "portaoId": "6821f91ab0915563d3d3add3",
+    "numeroVoo": "FL133",
+    "origem": "São Paulo",
+    "destino": "Rio de Janeiro",
+    "dataHoraPartida": "2025-05-12T15:30:00",
+    "status": "programado"
+}
+
+### Portao repetido
+### Segundo voo
+POST http://localhost:8080/api/voos
+Content-Type: application/json
+
+{
+  "portaoId": "6821f91ab0915563d3d3add3",
+  "numeroVoo": "FL133",
+  "origem": "São Paulo",
+  "destino": "Rio de Janeiro",
+  "dataHoraPartida": "2025-05-12T15:30:00",
+  "status": "programado"
+}
+
+
+### Listar todos os voos
+GET http://localhost:8080/api/voos
+
+### Buscar Voo por ID
+GET http://localhost:8080/api/voos/{id}
+
+### Deletar Voo por ID
+DELETE http://localhost:8080/api/voos/{id}
+
+### Atualizar Voo
+PUT http://localhost:8080/api/voos/6821ff91f3008c26c954385a
+Content-Type: application/json
+
+{
+  "codigo": "FL123",
+  "origem": "São Paulo",
+  "destino": "Belo Horizonte",
+  "dataHoraPartida": "2025-06-02T10:00:00",
+  "status": "embarque"
+}
+
+### Atualizar Status do Voo
+PUT http://localhost:8080/api/voos/{id}/status?status=concluido
+
+### Listar Voos do Dia
+GET http://localhost:8080/api/voos/do-dia
