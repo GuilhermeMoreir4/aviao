@@ -3,7 +3,7 @@ POST http://localhost:8080/api/portoes
 Content-Type: application/json
 
 {
-  "codigo": "A1",
+  "codigo": "Z4",
   "disponivel": true
 }
 
@@ -12,7 +12,7 @@ POST http://localhost:8080/api/portoes
 Content-Type: application/json
 
 {
-  "codigo": "A1",
+  "codigo": "Z5",
   "disponivel": true
 }
 

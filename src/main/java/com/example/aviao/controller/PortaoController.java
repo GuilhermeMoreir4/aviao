@@ -5,6 +5,7 @@ import com.example.aviao.service.PortaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,11 +24,11 @@ public class PortaoController {
         this.portaoService = portaoService;
     }
 
-    // Criar Portão
+    // Criar Portão - só admin
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping
     public ResponseEntity<?> criarPortao(@Valid @RequestBody Portao portao, BindingResult result) {
         if (result.hasErrors()) {
-            // Extrair todos os erros de campo
             Map<String, String> erros = result.getFieldErrors().stream()
                     .collect(Collectors.toMap(
                             error -> error.getField(),
@@ -36,7 +37,6 @@ public class PortaoController {
             return ResponseEntity.badRequest().body(erros);
         }
 
-        // Verificação do código único do portão
         try {
             Portao novoPortao = portaoService.criarPortao(portao);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoPortao);
@@ -45,14 +45,16 @@ public class PortaoController {
         }
     }
 
-    // Listar Todos os Portões
+    // Listar Todos os Portões - qualquer usuário autenticado
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<Portao>> listarTodos() {
         List<Portao> portoes = portaoService.listarTodos();
         return ResponseEntity.ok(portoes);
     }
 
-    // Buscar Portão por ID
+    // Buscar Portão por ID - qualquer usuário autenticado
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<Portao> buscarPorId(@PathVariable String id) {
         Optional<Portao> portao = portaoService.buscarPorId(id);
@@ -60,7 +62,8 @@ public class PortaoController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
-    // Buscar Portão por Código
+    // Buscar Portão por Código - qualquer usuário autenticado
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/codigo/{codigo}")
     public ResponseEntity<Portao> buscarPorCodigo(@PathVariable String codigo) {
         Optional<Portao> portao = portaoService.buscarPorCodigo(codigo);
@@ -68,7 +71,8 @@ public class PortaoController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
-    // Buscar Portão Disponível
+    // Buscar Portão Disponível - qualquer usuário autenticado
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/disponivel")
     public ResponseEntity<Portao> buscarDisponivel() {
         Optional<Portao> portao = portaoService.buscarDisponivel();
@@ -76,18 +80,20 @@ public class PortaoController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
-    // Atualizar Portão
+    // Atualizar Portão - só admin
+    @PreAuthorize("hasAuthority('admin')")
     @PutMapping("/{id}")
-    public ResponseEntity<Portao> atualizar(@PathVariable String id, @RequestBody Portao portao) {
+    public ResponseEntity<?> atualizar(@PathVariable String id, @RequestBody Portao portao) {
         try {
             Portao atualizado = portaoService.atualizar(id, portao);
             return ResponseEntity.ok(atualizado);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Portao) Map.of("erro", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("erro", e.getMessage()));
         }
     }
 
-    // Deletar Portão
+    // Deletar Portão - só admin
+    @PreAuthorize("hasAuthority('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         portaoService.deletar(id);

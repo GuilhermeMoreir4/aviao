@@ -21,6 +21,15 @@ public class VooService {
         this.portaoRepo = portaoRepo;
     }
 
+    public boolean portaoExiste(String portaoId) {
+        return portaoRepo.existsById(portaoId);
+    }
+
+    public boolean numeroVooExiste(String numero) {
+        return vooRepo.existsByNumeroVoo(numero);
+    }
+
+
     public Voo criarVoo(Voo voo) {
         voo.setStatus("programado");
         return vooRepo.save(voo);

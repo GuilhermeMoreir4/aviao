@@ -5,6 +5,8 @@ import com.example.aviao.model.Passageiro;
 import com.example.aviao.model.Voo;
 import com.example.aviao.repository.PassageiroRepository;
 import com.example.aviao.repository.VooRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +15,9 @@ import java.util.Optional;
 @Service
 public class PassageiroService {
 
+    @Autowired
     private final PassageiroRepository passageiroRepo;
+    @Autowired
     private final VooRepository vooRepo;
 
     public PassageiroService(PassageiroRepository passageiroRepo, VooRepository vooRepo) {
@@ -62,7 +66,6 @@ public class PassageiroService {
         existente.setVooId(atualizado.getVooId());
         return passageiroRepo.save(existente);
     }
-
     public Passageiro fazerCheckin(String idPassageiro) {
         Passageiro passageiro = passageiroRepo.findById(idPassageiro)
                 .orElseThrow(() -> new IllegalArgumentException("Passageiro não encontrado."));

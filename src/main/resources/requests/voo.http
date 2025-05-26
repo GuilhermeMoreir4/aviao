@@ -1,13 +1,12 @@
-### Criar um novo Voo
+### Criar um novo Voo número repetindo
 POST http://localhost:8080/api/voos
 Content-Type: application/json
-
 {
-  "portaoId": "6821f91ab0915563d3d3add3",
-  "numeroVoo": "FL123",
+  "portaoId": "682b2266b9067878d2e07a2c",
+  "numeroVoo": "AZ1234"
   "origem": "São Paulo",
   "destino": "Rio de Janeiro",
-  "dataHoraPartida": "2025-06-01T15:30:00",
+  "dataHoraPartida": "2025-05-20T15:30:00",
   "status": "programado"
 }
 
@@ -16,7 +15,8 @@ POST http://localhost:8080/api/voos
 Content-Type: application/json
 
 {
-  "portaoId": "6821f91ab0915563d3d3add3",
+  "portaoId": "682b1e723e857f5eaa1a0556",
+
     "numeroVoo": "FL133",
     "origem": "São Paulo",
     "destino": "Rio de Janeiro",
@@ -61,7 +61,11 @@ Content-Type: application/json
 }
 
 ### Atualizar Status do Voo
-PUT http://localhost:8080/api/voos/{id}/status?status=concluido
+PUT http://localhost:8080/api/voos/682b2244b9067878d2e07a2b/status?status=concluido
+
+
+### Atualizar Status do Voo
+PUT http://localhost:8080/api/voos/682b2244b9067878d2e07a2b/status?status=embarque
 
 ### Listar Voos do Dia
 GET http://localhost:8080/api/voos/do-dia
