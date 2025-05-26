@@ -29,10 +29,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/cadastro").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/flight", "/gate", "/passenger").authenticated()
-                        .requestMatchers("/flight/**", "/gate/**", "/passenger/**").hasAuthority("admin")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/auth/**").permitAll() // Permite login/cadastro
+                        .requestMatchers("/api/**").authenticated() // Exige autenticação para qualquer outra /api
+                        .anyRequest().denyAll() // Nega qualquer outra coisa (mais seguro)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

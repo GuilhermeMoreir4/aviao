@@ -1,23 +1,177 @@
-### Cadastro de Funcionário
-POST http://localhost:8080/api/auth/cadastro
+### ==================================
+###      TESTES API AVIAO (V2)
+### ==================================
+
+### Variáveis Globais (Ajuste a porta se necessário)
+@baseUrl = http://localhost:8080
+@adminToken = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ODM0NGY2NDczODA3NDBkMTcyYmYzNWUiLCJub21lIjoiQWRtaW4gVXNlciIsImNhcmdvIjoiYWRtaW4iLCJleHAiOjE3NDgyNTg3ODl9.ORsdllfFNDtDN8rb4WA40d-UIryTCZ1JSEhiQI47oto
+@comumToken = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ODM0NGY2ODczODA3NDBkMTcyYmYzNWYiLCJub21lIjoiQ29tdW0gVXNlciIsImNhcmdvIjoiY29tdW0iLCJleHAiOjE3NDgyNTg4MDd9.ev0bCI8tcCLltGUqi2JxcpgD7Qn0clej4aeT9Gt7J5c
+@portaoId =
+@vooId =
+@passageiroId =
+
+### ==================================
+###      CADASTRO E LOGIN
+### ==================================
+
+### 1. Cadastrar Admin
+POST {{baseUrl}}/api/auth/cadastro
 Content-Type: application/json
 
 {
-  "nome": "João Silva",
-  "email": "joao.silva@example.com",
-  "senha": "minhaSenha123",
+  "nome": "Admin User",
+  "email": "admin@aviao.com",
+  "senha": "senhaAdmin123",
   "cargo": "admin"
 }
 
-### Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2ODJiM2JmNzI3YjdkZTEyMzg2MTBjMzQiLCJub21lIjoiSm_Do28gU2lsdmEiLCJjYXJnbyI6ImFkbWluIiwiZXhwIjoxNzQ4MjU3NDg0fQ.CX6RAxsWf-UNSpC-zaiz4ZfEGaDPAWKc7NN3qQCaPqo
-
-### Login de Funcionário
-POST http://localhost:8080/api/auth/login
+### 2. Cadastrar Comum
+POST {{baseUrl}}/api/auth/cadastro
 Content-Type: application/json
 
 {
-  "email": "joao.silva@example.com",
-  "senha": "minhaSenha123"
+  "nome": "Comum User",
+  "email": "comum@aviao.com",
+  "senha": "senha123",
+  "cargo": "comum"
 }
 
+### 3. Login Admin -> Captura Token
+# @name loginAdmin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
 
+{
+  "email": "admin@aviao.com",
+  "senha": "senhaAdmin123"
+}
+
+> {%
+    client.global.set("adminToken", response.body.token);
+    client.log("Token Admin: " + response.body.token);
+%}
+
+### 4. Login Comum -> Captura Token
+# @name loginComum
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "comum@aviao.com",
+  "senha": "senha123"
+}
+
+> {%
+    client.global.set("comumToken", response.body.token);
+    client.log("Token Comum: " + response.body.token);
+%}
+
+### ==================================
+###      OPERAÇÕES ADMIN
+### ==================================
+
+### 5. Criar Portão (Admin) -> Captura ID
+# @name criarPortao
+POST {{baseUrl}}/api/portoes
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "codigo": "A15",
+  "status": "DISPONIVEL"
+
+}
+
+> {%
+    client.global.set("portaoId", response.body.id);
+    client.log("Portao ID: " + response.body.id);
+%}
+
+### 6. Criar Voo (Admin) -> Captura ID
+# @name criarVoo
+POST {{baseUrl}}/api/voos
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "numeroVoo": "G3-2030",
+  "origem": "SDU",
+  "destino": "CGH",
+  "dataHoraPartida": "2025-10-30T14:30:00",
+  "portaoId": "{{portaoId}}",
+  "status": "AGENDADO"
+}
+
+> {%
+    client.global.set("vooId", response.body.id);
+    client.log("Voo ID: " + response.body.id);
+%}
+
+### 7. Criar Passageiro (Admin) -> Captura ID
+# @name criarPassageiro
+POST {{baseUrl}}/api/passageiros
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "nome": "Guilherme Moreira",
+  "cpf": "111.222.333-44",
+  "vooId": "{{vooId}}",
+  "checkinRealizado": false
+}
+
+> {%
+    client.global.set("passageiroId", response.body.id);
+    client.log("Passageiro ID: " + response.body.id);
+%}
+
+
+### 8. Atualizar Status Voo (Admin) - Deve Funcionar
+PUT {{baseUrl}}/api/voos/{{vooId}}/status?status=EMBARCANDO
+Authorization: Bearer {{adminToken}}
+
+
+### ==================================
+###      OPERAÇÕES COMUM
+### ==================================
+
+### 9. Listar Voos (Comum) - Deve Funcionar
+GET {{baseUrl}}/api/voos
+Authorization: Bearer {{comumToken}}
+
+### 10. Listar Portões (Comum) - Deve Funcionar
+GET {{baseUrl}}/api/portoes
+Authorization: Bearer {{comumToken}}
+
+### 11. Buscar Passageiro por ID (Comum) - Deve Funcionar
+GET {{baseUrl}}/api/passageiros/{{passageiroId}}
+Authorization: Bearer {{comumToken}}
+
+### 12. Fazer Check-in (Comum) - Deve Funcionar
+POST {{baseUrl}}/api/passageiros/{{passageiroId}}/checkin
+Authorization: Bearer {{comumToken}}
+
+### 13. Tentar Criar Voo (Comum) - Deve Falhar (403)
+POST {{baseUrl}}/api/voos
+Content-Type: application/json
+Authorization: Bearer {{comumToken}}
+
+{
+  "numeroVoo": "XX999",
+  "origem": "AAA",
+  "destino": "BBB",
+  "dataHoraPartida": "2025-11-11T11:00:00",
+  "portaoId": "{{portaoId}}",
+  "status": "AGENDADO"
+}
+
+### 14. Tentar Deletar Portão (Comum) - Deve Falhar (403)
+DELETE {{baseUrl}}/api/portoes/{{portaoId}}
+Authorization: Bearer {{comumToken}}
+
+### ==================================
+###      TESTES SEM TOKEN
+### ==================================
+
+### 15. Listar Voos (Sem Token) - Deve Falhar (401 ou 403)
+GET {{baseUrl}}/api/voos
